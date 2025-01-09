@@ -1,19 +1,12 @@
 import cv2
-import RPi.GPIO as GPIO
-import time
-
-# Set up the button pin
-button_pin = 20
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Initialize the camera
-cap = cv2.VideoCapture(0)
-cap.set(3, 480)  # Width
-cap.set(4, 320)  # Height
+cap = cv2.VideoCapture(0)  # Use 0 for the default camera, change if needed
+cap.set(3, 640)  # Width
+cap.set(4, 480)  # Height
 
 # Create a window to display the camera feed
-cv2.namedWindow("Camera", cv2.WND_PROP_FULLSCREEN)
+cv2.namedWindow("Camera", cv2.WINDOW_NORMAL)
 cv2.setWindowProperty("Camera", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
 # Initialize variables
@@ -23,6 +16,9 @@ try:
     while True:
         # Read a frame from the camera
         ret, frame = cap.read()
+        if not ret:
+            print("Failed to capture image")
+            break
 
         # Convert the frame to grayscale
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -33,19 +29,17 @@ try:
         # Display the colored frame in the window
         cv2.imshow("Camera", colored_frame)
 
-        # Check if the button is pressed
-        if GPIO.input(button_pin) == GPIO.LOW:
+        # Check if the space bar is pressed
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord(' '):
             # Take a picture
             picture_name = f"picture_{picture_count}.jpg"
             cv2.imwrite(picture_name, colored_frame)
             print(f"Picture {picture_name} taken")
             picture_count += 1
 
-            # Wait for a short time to debounce the button
-            time.sleep(0.3)
-
         # Check if the user pressed the 'q' key to quit
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if key == ord('q'):
             break
 
 except KeyboardInterrupt:
@@ -55,4 +49,3 @@ finally:
     # Release the camera and close the window
     cap.release()
     cv2.destroyAllWindows()
-    GPIO.cleanup()
