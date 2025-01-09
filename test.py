@@ -1,7 +1,7 @@
 import cv2
 
 # Initialize the camera
-cap = cv2.VideoCapture(0)  # Use 0 for the default camera, change if needed
+cap = cv2.VideoCapture(1)  # Use 0 for the default camera, change if needed
 cap.set(3, 640)  # Width
 cap.set(4, 480)  # Height
 
