@@ -2,6 +2,7 @@ import cv2
 
 # Initialize the camera
 cap = cv2.VideoCapture(1)  # Use 0 for the default camera, change if needed
+cap = cv2.VideoCapture(1)  # Use 0 for the default camera, change if needed
 cap.set(3, 640)  # Width
 cap.set(4, 480)  # Height
 
@@ -34,7 +35,7 @@ try:
         if key == ord(' '):
             # Take a picture
             picture_name = f"picture_{picture_count}.jpg"
-            cv2.imwrite(picture_name, colored_frame)
+            cv2.imwrite(picture_name, frame)  # Save in color
             print(f"Picture {picture_name} taken")
             picture_count += 1
 
